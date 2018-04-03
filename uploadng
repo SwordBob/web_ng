@@ -1,0 +1,47 @@
+ <div ng-app="myApp" ng-controller="myCtrl">
+<form id="fileForm" enctype="multipart/form-data" >
+    <button id="import_asset" type="button" ng-click="import_asset()">上传文件</button>
+    <input id="file_asset" type="file" style="display: none;"/>
+</form> 
+</div>
+<script src="H:/下载/jquery-3.3.1.min.js"></script>
+<script src="H:/下载/angular-1.5.0/angular.js"></script>
+<script src="H:/下载/angular-1.5.0/angular.min.js"></script>
+<script>  
+    //自定义模块  
+    var app = angular.module('myApp', []);  
+    app.controller('myCtrl', function ($scope,$http) {  
+       $scope.import_asset = function () {
+    $("#file_asset").click();
+}; 
+$("#file_asset").on("change", function(){
+alert();
+    var formData = new FormData();
+    var file = document.getElementById("file_asset").files[0];
+    if(file.name){
+        var fileName = file.name.substring(file.name.lastIndexOf(".") + 1);
+        if(fileName =="xlsx" || fileName =="xls"){
+            formData.append('file', file);
+            $http({
+                method:"post",
+                url:commonService.projectName + "/so/assetmanage/upload",
+                data:formData,
+                headers : {
+                    'Content-Type' : undefined
+                },
+                transformRequest : angular.identity
+            }).success(function (response) {
+                if(response.status == 200){
+                    alert("文件上传成功！！！");
+                }else{
+                    alert("文件上传失败！！！");
+                }
+            });
+        }else{
+            alert("文件格式不正确，请上传以.xlsx，.xls 为后缀名的文件。");
+            $("#file_asset").val("");
+        }
+    }
+}); }); 
+    
+</script>  
